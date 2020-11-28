@@ -1,4 +1,4 @@
-﻿package entity
+package entity
 
 // PaymentForm contains form info
 type PaymentForm struct {

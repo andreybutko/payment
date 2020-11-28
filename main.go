@@ -1,6 +1,7 @@
-﻿package main
+package main
 
 import (
+	"fmt"
 	"github.com/andreybutko/payment/usecase/payment"
 	"github.com/gorilla/mux"
 	"log"
@@ -27,6 +28,14 @@ func main() {
 		Handler:      http.DefaultServeMux,
 		ErrorLog:     logger,
 	}
+	http.Handle("/", r)
+	r.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
+
+
+	fmt.Print(srv.Addr)
 	err := srv.ListenAndServe()
 	if err != nil {
 		log.Fatal(err.Error())
