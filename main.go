@@ -1,24 +1,33 @@
 package main
 
 import (
-	"fmt"
+	"github.com/andreybutko/payment/api/handler"
+	"github.com/andreybutko/payment/api/middleware"
+	"github.com/andreybutko/payment/config"
+	"github.com/andreybutko/payment/pkg/metric"
 	"github.com/andreybutko/payment/usecase/payment"
+	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
-
-	"github.com/andreybutko/payment/api/handler"
-	"github.com/andreybutko/payment/config"
 )
 
 func main() {
 	r := mux.NewRouter()
 
 	paymentService := payment.NewService()
-	handler.MakePaymentHandlers(r, paymentService)
+	metricService, err := metric.NewMetricService()
+	n := negroni.New(
+		middleware.Metrics(metricService),
+	)
+	handler.MakePaymentHandlers(r, *n, paymentService)
+	r.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+	http.Handle("/", r)
 
 	logger := log.New(os.Stderr, "logger: ", log.Lshortfile)
 	srv := &http.Server{
@@ -28,15 +37,8 @@ func main() {
 		Handler:      http.DefaultServeMux,
 		ErrorLog:     logger,
 	}
-	http.Handle("/", r)
-	r.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	})
 
-
-
-	fmt.Print(srv.Addr)
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 	if err != nil {
 		log.Fatal(err.Error())
 	}

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/codegangsta/negroni"
 	"github.com/andreybutko/payment/api/presenter"
 	"encoding/json"
 	"github.com/andreybutko/payment/usecase/payment"
@@ -32,7 +33,7 @@ func getPaymentForm(service payment.UseCase) http.Handler {
 		form := &presenter.PaymentForm{
 			URL: data.URL,
 		}
-
+		
 		if err := json.NewEncoder(w).Encode(form); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(errorMessage))
@@ -41,7 +42,8 @@ func getPaymentForm(service payment.UseCase) http.Handler {
 }
 
 //MakePaymentHandlers creates url handlers
-func MakePaymentHandlers(r *mux.Router, service payment.UseCase) {
-	r.Handle("/payments/{productID}", getPaymentForm(service),
-	).Methods("GET", "OPTIONS").Name("listUsers")
+func MakePaymentHandlers(r *mux.Router, n negroni.Negroni, service payment.UseCase) {
+	r.Handle("/payments/{productID}", n.With(
+		negroni.Wrap(getPaymentForm(service))),
+	).Methods("GET", "OPTIONS").Name("getPaymentForm")
 }
