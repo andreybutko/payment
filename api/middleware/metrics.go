@@ -29,6 +29,7 @@ func (w *responseWriterWithMetrics) WriteHeader(statusCode int) {
 	w.isHeaderWritten = true
 }
 
+// TODO: Refactor logic without flag
 func (w *responseWriterWithMetrics) Write(b []byte) (int, error) {
 	if !w.isHeaderWritten {
 		w.WriteHeader(http.StatusOK)

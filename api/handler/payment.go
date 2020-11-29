@@ -12,7 +12,7 @@ import (
 
 func getPaymentForm(service payment.UseCase) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		errorMessage := "Error adding payment"
+		errorMessage := "Error getting payment form."
 		vars := mux.Vars(r)
 		id := vars["productID"]
 
@@ -33,7 +33,7 @@ func getPaymentForm(service payment.UseCase) http.Handler {
 		form := &presenter.PaymentForm{
 			URL: data.URL,
 		}
-		
+
 		if err := json.NewEncoder(w).Encode(form); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(errorMessage))

@@ -1,7 +1,9 @@
 package payment
 
 import (
-	"fmt"
+	"encoding/json"
+	"github.com/andreybutko/payment/api/clients/mock"
+	"github.com/andreybutko/payment/api/clients/restclient"
 	"github.com/andreybutko/payment/entity"
 )
 
@@ -13,12 +15,17 @@ func NewService() *Service {
 }
 
 func (s *Service) GetPaymentForm(productID string) (*entity.PaymentForm, error) {
-	fmt.Print(productID)
-	// TODO: Replace with URL from service
-	form, err := entity.NewPaymentForm("url")
+
+	// TODO: move outside usecase logic
+	obj := `{"url":"payment.com/pay"}`
+	mock.HTTPResponse(obj, 200)
+
+	res, _ := restclient.Get("example.com", nil)
+	form := entity.PaymentForm{}
+	err := json.NewDecoder(res.Body).Decode(&form)
+
 	if err != nil {
 		return nil, err
 	}
-
-	return form, nil
+	return &form, nil
 }
