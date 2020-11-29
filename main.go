@@ -1,18 +1,18 @@
 package main
 
 import (
+	"log"
+	"net/http"
+	"os"
+	"time"
+
 	"github.com/andreybutko/payment/api/handler"
 	"github.com/andreybutko/payment/api/middleware"
-	"github.com/andreybutko/payment/config"
+	"github.com/andreybutko/payment/configuration"
 	"github.com/andreybutko/payment/pkg/metric"
 	"github.com/andreybutko/payment/usecase/payment"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
-	"log"
-	"net/http"
-	"os"
-	"strconv"
-	"time"
 )
 
 func main() {
@@ -31,11 +31,12 @@ func main() {
 	})
 	http.Handle("/", r)
 
+	config := configuration.GetConfig()
 	logger := log.New(os.Stderr, "logger: ", log.Lshortfile)
 	srv := &http.Server{
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
-		Addr:         ":" + strconv.Itoa(config.API_PORT),
+		Addr:         ":" + config.HostPort,
 		Handler:      http.DefaultServeMux,
 		ErrorLog:     logger,
 	}
