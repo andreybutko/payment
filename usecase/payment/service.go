@@ -1,31 +1,28 @@
 package payment
 
 import (
-	"encoding/json"
-	"github.com/andreybutko/payment/api/clients/mock"
-	"github.com/andreybutko/payment/api/clients/restclient"
 	"github.com/andreybutko/payment/entity"
 )
 
+// Service manages payment process
 type Service struct {
+	provider Provider
 }
 
-func NewService() *Service {
-	return &Service{}
+// NewService returns new payment service
+func NewService(provider Provider) *Service {
+	return &Service{
+		provider: provider,
+	}
 }
 
+// GetPaymentForm returns payment form from provider
 func (s *Service) GetPaymentForm(productID string) (*entity.PaymentForm, error) {
-
-	// TODO: move outside usecase logic
-	obj := `{"url":"payment.com/pay"}`
-	mock.HTTPResponse(obj, 200)
-
-	res, _ := restclient.Get("example.com", nil)
-	form := entity.PaymentForm{}
-	err := json.NewDecoder(res.Body).Decode(&form)
-
+	payment, err := s.provider.getPayment(&Request{})
 	if err != nil {
 		return nil, err
 	}
-	return &form, nil
+	form, _ := entity.NewPaymentForm(payment.URL)
+
+	return form, nil
 }

@@ -18,7 +18,8 @@ import (
 func main() {
 	r := mux.NewRouter()
 
-	paymentService := payment.NewService()
+	provider := payment.NewProvider()
+	paymentService := payment.NewService(provider)
 	metricService, err := metric.NewMetricService()
 	n := negroni.New(
 		middleware.Metrics(metricService),
