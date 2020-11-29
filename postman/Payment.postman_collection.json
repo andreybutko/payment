@@ -1,0 +1,32 @@
+{
+	"info": {
+		"_postman_id": "294419ec-ccc0-438c-89d7-31aa495657ba",
+		"name": "Payment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get payment methods",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/products/222/payment_methods",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"products",
+						"222",
+						"payment_methods"
+					]
+				},
+				"description": "Retrieves all available payment methods"
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
