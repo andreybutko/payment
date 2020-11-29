@@ -1,15 +1,16 @@
 package entity
 
-// PaymentForm contains form info
-type PaymentForm struct {
+// PaymentMethod contains payment method info
+type PaymentMethod struct {
 	URL string
 }
-// NewPaymentForm creates new payment form
-func NewPaymentForm(url string) (*PaymentForm, error) {
-	form := &PaymentForm{
+
+// NewPaymentMethod creates new payment method
+func NewPaymentMethod(url string) (*PaymentMethod, error) {
+	method := &PaymentMethod{
 		URL: url,
 	}
 	// TODO: add validation
-	return form, nil
+	return method, nil
 }
 

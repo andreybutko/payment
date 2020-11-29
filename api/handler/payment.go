@@ -10,40 +10,43 @@ import (
 	"net/http"
 )
 
-func getPaymentForm(service payment.UseCase) http.Handler {
+func getPaymentMethods(service payment.UseCase) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		errorMessage := "Error getting payment form."
+		// TODO: Extract error message from method
+		errorMessage := "Error getting payment methods."
 		vars := mux.Vars(r)
-		id := vars["productID"]
+		id := vars["id"]
 
-		data, err := service.GetPaymentForm(id)
+		methods, err := service.GetPaymentMethods(id)
 		if err != nil {
 			log.Println(err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(errorMessage))
+			_, _ = w.Write([]byte(errorMessage))
 			return
 		}
 
-		if data == nil {
+		if methods == nil {
 			w.WriteHeader(http.StatusNotFound)
-			w.Write([]byte(errorMessage))
+			_, _ = w.Write([]byte(errorMessage))
 			return
 		}
-
-		form := &presenter.PaymentForm{
-			URL: data.URL,
+		var response []presenter.PaymentMethod
+		for _, v := range *methods {
+			response = append(response, presenter.PaymentMethod{
+				URL: v.URL,
+			})
 		}
 
-		if err := json.NewEncoder(w).Encode(form); err != nil {
+		if err := json.NewEncoder(w).Encode(response); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(errorMessage))
+			_, _ = w.Write([]byte(errorMessage))
 		}
 	})
 }
 
 //MakePaymentHandlers creates url handlers
 func MakePaymentHandlers(r *mux.Router, n negroni.Negroni, service payment.UseCase) {
-	r.Handle("/payments/{productID}", n.With(
-		negroni.Wrap(getPaymentForm(service))),
-	).Methods("GET", "OPTIONS").Name("getPaymentForm")
+	r.Handle("/products/{id}/payment_methods", n.With(
+		negroni.Wrap(getPaymentMethods(service))),
+	).Methods("GET", "OPTIONS").Name("getPaymentMethods")
 }

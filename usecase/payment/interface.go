@@ -4,7 +4,7 @@ import "github.com/andreybutko/payment/entity"
 
 //UseCase interface
 type UseCase interface {
-	GetPaymentForm(productID string) (*entity.PaymentForm, error)
+	GetPaymentMethods(productID string) (*[]entity.PaymentMethod, error)
 }
 
 // Request contains payment response fields

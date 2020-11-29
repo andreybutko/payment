@@ -1,5 +1,5 @@
 package presenter
 
-type PaymentForm struct {
+type PaymentMethod struct {
 	URL string `json:"url"`
 }

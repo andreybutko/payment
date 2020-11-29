@@ -2,6 +2,7 @@ package payment
 
 import (
 	"github.com/andreybutko/payment/entity"
+	"log"
 )
 
 // Service manages payment process
@@ -16,13 +17,14 @@ func NewService(provider Provider) *Service {
 	}
 }
 
-// GetPaymentForm returns payment form from provider
-func (s *Service) GetPaymentForm(productID string) (*entity.PaymentForm, error) {
+// GetPaymentMethods returns payment methods from provider
+func (s *Service) GetPaymentMethods(productID string) (*[]entity.PaymentMethod, error) {
+	log.Printf("ProductID: %s - processed", productID)
 	payment, err := s.provider.getPayment(&Request{})
 	if err != nil {
 		return nil, err
 	}
-	form, _ := entity.NewPaymentForm(payment.URL)
+	method, _ := entity.NewPaymentMethod(payment.URL)
 
-	return form, nil
+	return &[]entity.PaymentMethod{*method}, nil
 }
