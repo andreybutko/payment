@@ -22,6 +22,7 @@ func main() {
 	metricService, err := metric.NewMetricService()
 	n := negroni.New(
 		middleware.Metrics(metricService),
+		middleware.Common(),
 	)
 	handler.MakePaymentHandlers(r, *n, paymentService)
 	r.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
