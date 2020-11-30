@@ -2,7 +2,7 @@
 
 Requirements:
 * [Go v1.15](https://golang.org/dl/)
-* Good mood*
+* [Good mood*](https://www.youtube.com/watch?v=rcWynJROnyI)
 
 ## Run application locally
 1. Clone repository 
