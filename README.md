@@ -16,7 +16,7 @@ Requirements:
    ```
     go run main.go
    ```
-6. Request examples available within Postman collection at `./postaman` folder.
+6. Request examples available within Postman collection at `./postman` folder.
 
 ## Tests
 1. To run all tests use
